@@ -3,6 +3,11 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinCompilationToRunnableFiles
 
 plugins {
     kotlin("multiplatform") version "1.3.41"
+    application
+}
+
+application{
+    mainClassName = "ru.mipt.phys.diffraction.AppFrameKt"
 }
 
 repositories {
@@ -11,6 +16,7 @@ repositories {
 
 kotlin {
     jvm {
+        withJava()
         compilations.all {
             kotlinOptions {
                 jvmTarget = "11"
