@@ -1,10 +1,10 @@
-package ru.mipt.phys.difraction
+package ru.mipt.phys.diffraction
 
 
 /**
  * Алгоритм заполнения контура
  */
-fun Array<Array<Int>>.fillcontour() {
+fun Array<IntArray>.fillcontour() {
     val table = this
     for (i in 0 until table.size) {
         var state = 0

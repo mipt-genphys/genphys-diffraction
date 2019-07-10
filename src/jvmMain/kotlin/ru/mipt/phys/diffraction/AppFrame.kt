@@ -1,5 +1,10 @@
-package ru.mipt.phys.difraction
+package ru.mipt.phys.diffraction
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.swing.Swing
+import kotlinx.coroutines.withContext
 import java.awt.*
 import javax.swing.JFrame
 
@@ -16,7 +21,7 @@ class AppFrame(val pixelSize: Int) {
 
     private val intensionMatrixSize: Int = pixelSize / intensionGridStep
     private val gridSize: Int = (pixelSize / gridStep)
-    private var gridMatrix: Array<Array<Int>> = Array(gridSize) { Array(gridSize) { 0 } }
+    private var gridMatrix: Array<IntArray> = Array(gridSize) { IntArray(gridSize) { 0 } }
     //buttons
     private lateinit var buttonCalc: Button
     private lateinit var buttonClear: Button
@@ -59,10 +64,12 @@ class AppFrame(val pixelSize: Int) {
         buttonCalc.setLocation(225, 10)
         buttonCalc.addActionListener {
             mListener.activeDrawFlag = false
-
-            gridMatrix.fillcontour()
-            //printGridMatrix()
-            drawDiffractionPic(diffCalc.calcDiffraction(gridMatrix, gridSize, gridStep))
+            GlobalScope.launch(Dispatchers.Default) {
+                gridMatrix.fillcontour()
+                //printGridMatrix()
+                val matrix = diffCalc.calcDiffraction(gridMatrix, gridSize, gridStep)
+                drawDiffractionPic(matrix)
+            }
             startDraw()
         }
         frame.add(buttonCalc)
@@ -82,31 +89,39 @@ class AppFrame(val pixelSize: Int) {
     }
 
 
-    private fun drawDiffractionPic(intensionMatrix: Array<Array<Double>>) {
-        var maxValue: Double = Double.MIN_VALUE
-        var minValue: Double = Double.MAX_VALUE
-        for (i in 0 until intensionMatrixSize) {
-            for (j in 0 until intensionMatrixSize) {
-                if (maxValue < intensionMatrix[i][j])
-                    maxValue = intensionMatrix[i][j]
-                if (minValue > intensionMatrix[i][j])
-                    minValue = intensionMatrix[i][j]
+    private suspend fun drawDiffractionPic(intensionMatrix: Array<DoubleArray>) {
+        withContext(Dispatchers.Swing) {
+            var maxValue: Double = Double.MIN_VALUE
+            var minValue: Double = Double.MAX_VALUE
+            for (i in 0 until intensionMatrixSize) {
+                for (j in 0 until intensionMatrixSize) {
+                    if (maxValue < intensionMatrix[i][j])
+                        maxValue = intensionMatrix[i][j]
+                    if (minValue > intensionMatrix[i][j])
+                        minValue = intensionMatrix[i][j]
+                }
+            }
+
+            for (i in 0 until intensionMatrixSize)
+                for (j in 0 until intensionMatrixSize)
+                    intensionMatrix[i][j] = (intensionMatrix[i][j] / (maxValue - minValue)) * 255
+
+            for (i in 0 until intensionMatrixSize) {
+                for (j in 0 until intensionMatrixSize) {
+                    graphics.color = Color(
+                        intensionMatrix[i][j].toInt(),
+                        intensionMatrix[i][j].toInt(),
+                        intensionMatrix[i][j].toInt()
+                    );
+                    graphics.fillRect(
+                        j * intensionGridStep,
+                        i * intensionGridStep,
+                        intensionGridStep,
+                        intensionGridStep
+                    )
+                }
             }
         }
-
-        for (i in 0 until intensionMatrixSize)
-            for (j in 0 until intensionMatrixSize)
-                intensionMatrix[i][j] = (intensionMatrix[i][j] / (maxValue - minValue)) * 255
-
-        for (i in 0 until intensionMatrixSize)
-            for (j in 0 until intensionMatrixSize) {
-                graphics.color = Color(
-                    intensionMatrix[i][j].toInt(),
-                    intensionMatrix[i][j].toInt(),
-                    intensionMatrix[i][j].toInt()
-                );
-                graphics.fillRect(j * intensionGridStep, i * intensionGridStep, intensionGridStep, intensionGridStep)
-            }
     }
 
 }

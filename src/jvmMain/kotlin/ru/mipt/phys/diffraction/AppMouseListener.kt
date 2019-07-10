@@ -1,4 +1,4 @@
-package ru.mipt.phys.difraction
+package ru.mipt.phys.diffraction
 
 import java.awt.Graphics
 import java.awt.event.MouseEvent
@@ -9,7 +9,7 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sqrt
 
-class AppMouseListener(var g:Graphics, var table: Array<Array<Int>>, var gridStep: Int) : MouseMotionListener, MouseListener {
+class AppMouseListener(var g:Graphics, var table: Array<IntArray>, var gridStep: Int) : MouseMotionListener, MouseListener {
 
     var prevX:Int = -1
     var prevY:Int = -1
