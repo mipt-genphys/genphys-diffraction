@@ -4,16 +4,16 @@ import kotlin.math.*
 
 
 class DiffractionCalculator(
-    val pixelSize: Int,
-    val intensionMatrixSize: Int,
-    private val lambdaWave: Double = 500 * 1e-3, // Микрометры
-    private val l0: Double = 5 * 1e5, // Микрометры
-    private val pixelLen: Double = 5.0, // Микрометры
-    private val intensionMatrixStep: Int = pixelSize / intensionMatrixSize
+        val pixelSize: Int,
+        val intensionMatrixSize: Int,
+        private val lambdaWave: Double = 500 * 1e-3, // Микрометры
+        private val l0: Double = 5 * 1e5, // Микрометры
+        private val pixelLen: Double = 5.0, // Микрометры
+        private val intensionMatrixStep: Int = pixelSize / intensionMatrixSize
 ) {
 
     private var intensionMatrix: Array<DoubleArray> =
-        Array(intensionMatrixSize) { DoubleArray(intensionMatrixSize) }
+            Array(intensionMatrixSize) { DoubleArray(intensionMatrixSize) }
     //
 
     fun centerOfMass(holeMatrix: Array<IntArray>, hMsize: Int, cellSize: Int): Pair<Double, Double> {
@@ -61,16 +61,16 @@ class DiffractionCalculator(
                 val directionE = (intensionMatrixStep * pixelLen) * (intensionMatrixStep * pixelLen) * aS * bS
 
                 summingTension(
-                    holeMatrix,
-                    hMsize,
-                    cellSize,
-                    sX,
-                    sY,
-                    directionE,
-                    intensionMatrixSize - j - 1,
-                    i,
-                    xRelCenter,
-                    yRelCenter
+                        holeMatrix,
+                        hMsize,
+                        cellSize,
+                        sX,
+                        sY,
+                        directionE,
+                        intensionMatrixSize - j - 1,
+                        i,
+                        xRelCenter,
+                        yRelCenter
                 )
             }
         }
@@ -79,16 +79,16 @@ class DiffractionCalculator(
     }
 
     private fun summingTension(
-        holeMatrix: Array<IntArray>,
-        hMsize: Int,
-        cellSize: Int,
-        sX: Double,
-        sY: Double,
-        directionE: Double,
-        iPos: Int,
-        jPos: Int,
-        xRelCenter: Double,
-        yRelCenter: Double
+            holeMatrix: Array<IntArray>,
+            hMsize: Int,
+            cellSize: Int,
+            sX: Double,
+            sY: Double,
+            directionE: Double,
+            iPos: Int,
+            jPos: Int,
+            xRelCenter: Double,
+            yRelCenter: Double
     ) {
         var e: Double = 0.0
         for (i in 0 until hMsize) {

@@ -12,7 +12,7 @@ fun Array<IntArray>.fillcontour() {
         var firstOne = -1
         var j = 0
         var firstOneLocked = 0
-        while (j < table.size) {
+        while (j < table.size - 2) {
             if (table[i][j] == 1) {
                 if (table[i][j + 1] == 1) {
                     if (firstOneLocked == 0) {

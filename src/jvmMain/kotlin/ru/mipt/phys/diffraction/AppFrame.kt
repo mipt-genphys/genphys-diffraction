@@ -6,7 +6,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.swing.Swing
 import kotlinx.coroutines.withContext
 import java.awt.*
-import javax.swing.JFrame
+import javax.swing.*
+import java.awt.Font
+import java.awt.FontMetrics
 
 
 class AppFrame(val pixelSize: Int) {
@@ -20,19 +22,21 @@ class AppFrame(val pixelSize: Int) {
     private val intensionGridStep = 5
 
     private val intensionMatrixSize: Int = pixelSize / intensionGridStep
-    private val gridSize: Int = (pixelSize / gridStep)
+    private val gridSize: Int = (pixelSize / gridStep) + 1
     private var gridMatrix: Array<IntArray> = Array(gridSize) { IntArray(gridSize) { 0 } }
     //buttons
     private lateinit var buttonCalc: Button
     private lateinit var buttonClear: Button
+    private var avaliableButtonFlag: Boolean = true;
+    private var avaliableButtonFlagCleaned: Boolean = true;
     //
     private val diffCalc: DiffractionCalculator = DiffractionCalculator(pixelSize, intensionMatrixSize)
 
     init {
         frame.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
         frame.setSize(pixelSize, pixelSize)
-
         canvas.setSize(pixelSize, pixelSize)
+
 
         configureButtons()
 
@@ -63,14 +67,25 @@ class AppFrame(val pixelSize: Int) {
         buttonCalc.size = Dimension(150, 40)
         buttonCalc.setLocation(225, 10)
         buttonCalc.addActionListener {
-            mListener.activeDrawFlag = false
-            GlobalScope.launch(Dispatchers.Default) {
-                gridMatrix.fillcontour()
-                //printGridMatrix()
-                val matrix = diffCalc.calcDiffraction(gridMatrix, gridSize, gridStep)
-                drawDiffractionPic(matrix)
+            if (avaliableButtonFlag and avaliableButtonFlagCleaned) {
+                avaliableButtonFlag = false
+                mListener.activeDrawFlag = false
+                avaliableButtonFlagCleaned = false
+                //
+                graphics.setFont(Font("TimesRoman", Font.PLAIN, 30));
+                val fm = graphics.getFontMetrics();
+                val w = fm.stringWidth("LOADING...");
+                val h = fm.getAscent();
+                graphics.drawString("LOADING...", 300 - (w / 2), 300 + (h / 4));
+
+                GlobalScope.launch(Dispatchers.Default) {
+                    gridMatrix.fillcontour()
+                    val matrix = diffCalc.calcDiffraction(gridMatrix, gridSize, gridStep)
+                    drawDiffractionPic(matrix)
+                    avaliableButtonFlag = true
+                }
+                startDraw()
             }
-            startDraw()
         }
         frame.add(buttonCalc)
 
@@ -78,11 +93,14 @@ class AppFrame(val pixelSize: Int) {
         buttonClear.size = Dimension(150, 40)
         buttonClear.setLocation(450, 10)
         buttonClear.addActionListener {
-            graphics.clearRect(0, 0, pixelSize, pixelSize)
-            for (r in 0 until gridSize) {
-                for (c in 0 until gridSize) {
-                    gridMatrix[r][c] = 0
+            if (avaliableButtonFlag) {
+                graphics.clearRect(0, 0, pixelSize, pixelSize)
+                for (r in 0 until gridSize) {
+                    for (c in 0 until gridSize) {
+                        gridMatrix[r][c] = 0
+                    }
                 }
+                avaliableButtonFlagCleaned = true
             }
         }
         frame.add(buttonClear)
@@ -109,15 +127,15 @@ class AppFrame(val pixelSize: Int) {
             for (i in 0 until intensionMatrixSize) {
                 for (j in 0 until intensionMatrixSize) {
                     graphics.color = Color(
-                        intensionMatrix[i][j].toInt(),
-                        intensionMatrix[i][j].toInt(),
-                        intensionMatrix[i][j].toInt()
+                            intensionMatrix[i][j].toInt(),
+                            intensionMatrix[i][j].toInt(),
+                            intensionMatrix[i][j].toInt()
                     );
                     graphics.fillRect(
-                        j * intensionGridStep,
-                        i * intensionGridStep,
-                        intensionGridStep,
-                        intensionGridStep
+                            j * intensionGridStep,
+                            i * intensionGridStep,
+                            intensionGridStep,
+                            intensionGridStep
                     )
                 }
             }

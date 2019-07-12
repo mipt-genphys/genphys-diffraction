@@ -5,7 +5,7 @@ pluginManagement {
         maven("https://dl.bintray.com/kotlin/kotlin-eap")
     }
 
-    val kotlinVersion = "1.3.40"
+    val kotlinVersion = "1.3.41"
     resolutionStrategy {
         eachPlugin {
             when (requested.id.id) {

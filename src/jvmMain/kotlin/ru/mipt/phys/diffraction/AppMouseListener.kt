@@ -48,6 +48,10 @@ class AppMouseListener(var g:Graphics, var table: Array<IntArray>, var gridStep:
     }
 
     override fun mouseDragged(e: MouseEvent) {
+        if(e.x > 600 || e.y > 600 || e.x < 0 || e.y < 0){
+            firstPressedFlag = false
+            return
+        }
         if (activeDrawFlag) {
             if (firstPressedFlag) {
                 g.drawLine(prevX, prevY, e.x, e.y)
