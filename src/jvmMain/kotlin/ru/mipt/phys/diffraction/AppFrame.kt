@@ -27,16 +27,15 @@ class AppFrame(val pixelSize: Int) {
     //buttons
     private lateinit var buttonCalc: Button
     private lateinit var buttonClear: Button
-    private var avaliableButtonFlag: Boolean = true;
-    private var avaliableButtonFlagCleaned: Boolean = true;
+    private var avaliableButtonFlag: Boolean = true
+    private var avaliableButtonFlagCleaned: Boolean = true
     //
     private val diffCalc: DiffractionCalculator = DiffractionCalculator(pixelSize, intensionMatrixSize)
 
     init {
         frame.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
-        frame.setSize(pixelSize, pixelSize)
-        canvas.setSize(pixelSize, pixelSize)
-
+        frame.size = Dimension(pixelSize, pixelSize)
+        canvas.size = Dimension(pixelSize, pixelSize)
 
         configureButtons()
 
@@ -72,11 +71,11 @@ class AppFrame(val pixelSize: Int) {
                 mListener.activeDrawFlag = false
                 avaliableButtonFlagCleaned = false
                 //
-                graphics.setFont(Font("TimesRoman", Font.PLAIN, 30));
-                val fm = graphics.getFontMetrics();
-                val w = fm.stringWidth("LOADING...");
-                val h = fm.getAscent();
-                graphics.drawString("LOADING...", 300 - (w / 2), 300 + (h / 4));
+                graphics.setFont(Font("TimesRoman", Font.PLAIN, 30))
+                val fm = graphics.getFontMetrics()
+                val w = fm.stringWidth("LOADING...")
+                val h = fm.getAscent()
+                graphics.drawString("LOADING...", 300 - (w / 2), 300 + (h / 4))
 
                 GlobalScope.launch(Dispatchers.Default) {
                     gridMatrix.fillcontour()
@@ -84,7 +83,6 @@ class AppFrame(val pixelSize: Int) {
                     drawDiffractionPic(matrix)
                     avaliableButtonFlag = true
                 }
-                startDraw()
             }
         }
         frame.add(buttonCalc)
@@ -102,6 +100,7 @@ class AppFrame(val pixelSize: Int) {
                 }
                 avaliableButtonFlagCleaned = true
             }
+            startDraw()
         }
         frame.add(buttonClear)
     }
@@ -119,10 +118,9 @@ class AppFrame(val pixelSize: Int) {
                         minValue = intensionMatrix[i][j]
                 }
             }
-
             for (i in 0 until intensionMatrixSize)
                 for (j in 0 until intensionMatrixSize)
-                    intensionMatrix[i][j] = (intensionMatrix[i][j] / (maxValue - minValue)) * 255
+                    intensionMatrix[i][j] = ((intensionMatrix[i][j] - minValue) / (maxValue - minValue)) * 255
 
             for (i in 0 until intensionMatrixSize) {
                 for (j in 0 until intensionMatrixSize) {
@@ -130,7 +128,7 @@ class AppFrame(val pixelSize: Int) {
                             intensionMatrix[i][j].toInt(),
                             intensionMatrix[i][j].toInt(),
                             intensionMatrix[i][j].toInt()
-                    );
+                    )
                     graphics.fillRect(
                             j * intensionGridStep,
                             i * intensionGridStep,

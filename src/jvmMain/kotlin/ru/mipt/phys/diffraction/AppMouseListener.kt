@@ -11,13 +11,13 @@ import kotlin.math.sqrt
 
 class AppMouseListener(var g:Graphics, var table: Array<IntArray>, var gridStep: Int) : MouseMotionListener, MouseListener {
 
-    var prevX:Int = -1
-    var prevY:Int = -1
+    var xp:Int = -1
+    var yp:Int = -1
     var firstPressedFlag:Boolean = false
     var activeDrawFlag:Boolean = false
 
     //создаем контур
-    private fun makingCircuit(xp:Int, yp:Int, xn:Int, yn:Int) {
+    private fun makingCircuit(xn:Int, yn:Int) {
         if(xn - xp != 0) {
             val k:Double = (yn - yp).toDouble() / (xn - xp)
             if(abs(k) <= 1) {
@@ -38,7 +38,7 @@ class AppMouseListener(var g:Graphics, var table: Array<IntArray>, var gridStep:
                 val itY = (sqrt(1/sqrt(1 + k*k)) * gridStep).toInt()
                 while (yStart < yEnd) {
                     table[(yStart / gridStep)][(((yStart - yn) * k + xn) / gridStep).toInt()] = 1
-                    yStart += itY;
+                    yStart += itY
                 }
             }
         }
@@ -54,11 +54,11 @@ class AppMouseListener(var g:Graphics, var table: Array<IntArray>, var gridStep:
         }
         if (activeDrawFlag) {
             if (firstPressedFlag) {
-                g.drawLine(prevX, prevY, e.x, e.y)
-                makingCircuit(prevX, prevY, e.x, e.y)
+                g.drawLine(xp, yp, e.x, e.y)
+                makingCircuit(e.x, e.y)
             }
-            prevX = e.x
-            prevY = e.y
+            xp = e.x
+            yp = e.y
             firstPressedFlag = true
         }
     }

@@ -6,13 +6,13 @@ package ru.mipt.phys.diffraction
  */
 fun Array<IntArray>.fillcontour() {
     val table = this
-    for (i in 0 until table.size) {
+    for (i in 1 until table.size - 1) {
         var state = 0
         var firstZero = -1
         var firstOne = -1
-        var j = 0
+        var j = 1
         var firstOneLocked = 0
-        while (j < table.size - 2) {
+        while (j < table.size - 1) {
             if (table[i][j] == 1) {
                 if (table[i][j + 1] == 1) {
                     if (firstOneLocked == 0) {
