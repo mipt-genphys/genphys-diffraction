@@ -71,10 +71,10 @@ class AppFrame(val pixelSize: Int) {
                 mListener.activeDrawFlag = false
                 avaliableButtonFlagCleaned = false
                 //
-                graphics.setFont(Font("TimesRoman", Font.PLAIN, 30))
-                val fm = graphics.getFontMetrics()
+                graphics.font = Font("TimesRoman", Font.PLAIN, 30)
+                val fm = graphics.fontMetrics
                 val w = fm.stringWidth("LOADING...")
-                val h = fm.getAscent()
+                val h = fm.ascent
                 graphics.drawString("LOADING...", 300 - (w / 2), 300 + (h / 4))
 
                 GlobalScope.launch(Dispatchers.Default) {
